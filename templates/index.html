@@ -67,7 +67,11 @@
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar" id="ip-list">
-            </ul>
+                <!--
+                <li class=""><a href="#">135.251.139.17</a></li>
+                <li class=""><a href="#">140.251.154.53</a></li>
+                -->
+           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h1 class="page-header">Dashboard</h1>
@@ -284,15 +288,11 @@
             ctx.fillText(text, x, y);
         }
 
-        function getShowNodes(ipObj) {
-            // {
-            //   "ip": "140.255.144.166",
-            //   "path": [
-            //     [ 11, 21, 35, 43, 52, 61 ],
+        function getShowNodes(paths) {
+            //   [  [ 11, 21, 35, 43, 52, 61 ],
             //     [ 11, 21, 35, 43, 52, 64 ]
             //   ]
-            // }
-            var paths = ipObj.path;
+
             var showNodes = [];
             paths.forEach(function (arrs) {
                 arrs.forEach(function (ele) {
@@ -305,9 +305,11 @@
             return showNodes.sort();
         }
 
-        function getShowLines(ipObj) {
-            //console.log(ipObj);
-            var paths = ipObj.path;
+        function getShowLines(paths) {
+            //   [  [ 11, 21, 35, 43, 52, 61 ],
+            //     [ 11, 21, 35, 43, 52, 64 ]
+            //   ]
+
             var showLines = [];
             paths.forEach(function (arrs) {
                 for (var i = 0; i < arrs.length - 1; i++) {
@@ -464,18 +466,15 @@
             event.preventDefault();
             event.stopPropagation();
 
-            // 清除active样式
-            clearActive();
-
             // 获得事件源
             var target = event.target;
 
-            // 增加active样式
-            target.parentNode.className = 'active';
+            // 改变active样式 事件源是a，样式在其外层的li上
+            changeActive(target.parentNode);
 
             // 获得ip值
             var ip = target.innerText;
-            console.log('当前选中ip为', ip);
+            console.log('当前点击的ip为', ip);
 
             // 由ip与attack_records比对，返回该ip和其path组成的obj
             var ipObj;
@@ -487,18 +486,22 @@
                 }
             });
 
+            // {
+            //   "ip": "140.255.144.166",
+            //   "path": [
+            //     [ 11, 21, 35, 43, 52, 61 ],
+            //     [ 11, 21, 35, 43, 52, 64 ]
+            //   ]
+            // }
+
             // 清除画布
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
             // 获得要显示的线
-            var showLines = getShowLines(ipObj);
-
+            var showLines = getShowLines(ipObj.path);
             // 画线（先画线后画圆）
             drawShowLines(showLines);
-
             // 获得要显示的节点
-            var showNodes = getShowNodes(ipObj);
-
+            var showNodes = getShowNodes(ipObj.path);
             // 画圆
             drawShowNodes(showNodes);
 
@@ -542,13 +545,19 @@
             return id;
         }
 
-        function clearActive() {
+        function changeActive(targetLi) {
+            //<ul class="nav nav-sidebar" id="ip-list">
+            //    <li class=""><a href="#">135.251.139.17</a></li>
+            //    <li class=""><a href="#">140.251.154.53</a></li>
+            //</ul>
+
             var ulEle = document.getElementById('ip-list');
             var liEles = ulEle.children;
             //console.log(liEles);
             for (var i = 0; i < liEles.length; i++) {
                 liEles[i].className = '';
             }
+            targetLi.className='active';
         }
 
         // 点击某一node后的处理函数
@@ -574,29 +583,21 @@
                     // 清除画布
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                    // 构造要显示的node和line
-                    var showNodes = [];
-                    var showLines = [];
-
+                    // 获得要显示的线
+                    var showLines=[];
                     res.forEach(function (obj) {
                         var arr=obj.edge;
                         showLines.push(arr);
                     });
-
-                    res.forEach(function (obj) {
-                        var arr=obj.edge;
-                        arr.forEach(function (ele) {
-                            if (showNodes.indexOf(ele) == -1) {
-                                showNodes.push(ele);
-                            }
-                        });
-                    });
-                    showNodes.sort();
-
+                    // 画线（先画线后画圆）
                     drawShowLines(showLines);
+
+                    // 获得要显示的节点
+                    var showNodes = getShowNodes(showLines);//showLines-->[[21,33],[21,34],[21,35]]
+                    // 画圆
                     drawShowNodes(showNodes);
 
-                    // 构造百分比
+                    // 画百分比
                     res.forEach(function (obj) {
                         var arr=obj.edge;
                         var start= getPosFromId(arr[0]);
@@ -604,7 +605,6 @@
                         // 绘制文本
                         drawText((start[0]+end[0])/2, (start[1]+end[1])/2, obj.per, '#000000')
                     });
-
                 }
             });
         }
