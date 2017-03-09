@@ -79,7 +79,7 @@
                 <canvas id="attack-canvas" width="960px" height="540px"></canvas>
             </div>
 
-            <h2 class="sub-header">Section title</h2>
+            <h2 class="sub-header">Section 1</h2>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
@@ -104,6 +104,43 @@
                             <td>局域网嗅探</td>
                         </tr>
                     -->
+                    </tbody>
+                </table>
+            </div>
+            <h2 class="sub-header">Section 2</h2>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>源IP</th>
+                            <th>目的IP</th>
+                            <th>资产IP</th>
+                            <th>公司</th>
+                            <th>机房</th>
+                            <th>管理员</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resource-tabel">
+                        <tr>
+                            <td rowspan="3">169.255.111.162</td>
+                            <td rowspan="3">10.10.10.1</td>
+                            <td>10.10.10.1</td>
+                            <td>联研院</td>
+                            <td>A110</td>
+                            <td>张晶晶</td>
+                        </tr>
+                        <tr>
+                            <td>10.10.10.2</td>
+                            <td>联研院</td>
+                            <td>A110</td>
+                            <td>武宏斌</td>
+                        </tr>
+                        <tr>
+                            <td>10.10.10.3</td>
+                            <td>联研院</td>
+                            <td>A110</td>
+                            <td>李彦庆</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -248,7 +285,7 @@
                 aEle.onclick = selectIpHandler;
                 liEle.appendChild(aEle);
                 ulEle.appendChild(liEle);
-            })
+            });
             // console.log(ulEle);
         }
 
@@ -575,7 +612,7 @@
             // 发送请求
             $.ajax({
                 url: '/getPrePersent',
-                data:{'node':id},
+                data:{'id':id},
                 success: function (response) {
                     // {"res":[{"edge":[21,33],"per":"80%"},{"edge":[21,34],"per":"60%"},{"edge":[21,35],"per":"70%"}]}
                     var res = response.res;
