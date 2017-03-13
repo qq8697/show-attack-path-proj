@@ -1,7 +1,36 @@
+
+#dom-on-canvas{
+    height: 675px;
+    width: 1200px;
+    position: absolute;
+    border: 1px solid #eee;
+    left: 0;
+    top:0;
+}
+#dom-on-canvas a{
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+
+    border-radius: 50%;
+    background-color: #8c8c8c;
+    position: absolute;
+    color: #5cb85c;
+    font-size: 16px;
+
+    vertical-align: middle;
+    text-align: center;/*左右居中*/
+    line-height: 67px;/*上下居中*/
+
+    /*...省略号样式*/
+    white-space: nowrap;/*文字不换行 word-break:keep-all;*/
+    /*text-overflow:ellipsis;*/
+    /*overflow: hidden;*/
+}
 #attack-canvas {
-    height: 100%;
-    width: 80%;
-    margin: 0 10%;
+    height: 675px;
+    width: 1200px;
+    /*margin: 0 10%;*/
 }
 #path-tabel td{
     cursor:pointer;

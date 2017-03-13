@@ -75,8 +75,11 @@
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h1 class="page-header">Dashboard</h1>
-            <div>
-                <canvas id="attack-canvas" width="960px" height="540px"></canvas>
+            <div style="position: relative;">
+                <canvas id="attack-canvas" width="1200px" height="675px"></canvas>
+                <div id="dom-on-canvas">
+
+                </div>
             </div>
 
             <h2 class="sub-header">Section 1</h2>
@@ -212,16 +215,18 @@
             url: '/getInitData',
             success: function (response) {
                 attack_records = response.res;
+
+                // 生成ip列表
+                createIpList(attack_records);
+
                 // 给attack_nodes[i][j]即{'id':11,'text':'端口扫描'}添加pos属性，返回半径r
                 // 该属性由canvas宽高和横向纵向项目个数计算而来
                 // 用于后续画圆和画线
                 r = addPosProp();
 
-                // 生成ip列表
-                createIpList(attack_records);
-
                 // 画出所有的节点
-                drawAllNodes(attack_nodes);
+                drawAllNodes();
+                createAllNodesByDom();
             }
         });
 
@@ -240,6 +245,7 @@
             // 获得canvas的宽和高
             var width = canvas.width,
                 height = canvas.height;
+
             console.log('canvas的宽和高实际分别为：', canvas.offsetWidth, canvas.offsetHeight);
             console.log('canvas的宽和高设置分别为：', width, height);
 
@@ -278,7 +284,7 @@
             // 循环生成子li元素
             data.forEach(function (ele) {
                 var liEle = document.createElement('li');
-                var aEle = document.createElement('a')
+                var aEle = document.createElement('a');
                 aEle.href = "#";
                 aEle.innerText = ele.ip;
                 // 给ip绑定点击事件，点击后改变canvas图和table列表内容
@@ -645,6 +651,49 @@
                 }
             });
         }
+
+        // 绑定事件处理函数
+        window.addEventListener('load',setDomOnCanvas,false);
+        window.addEventListener('resize',setDomOnCanvas,false);
+
+        // 设置canvas上层的dom
+        function setDomOnCanvas() {
+            //var canvas=document.getElementById('attack-canvas');
+            //var domOnCanvas=document.getElementById('dom-on-canvas');
+
+            // 获得canvas的实际宽度和高度 canvas.offsetWidth-->1105
+            // 设置dom元素的宽度和高度 domOnCanvas.style.width=1105+'px'
+            //domOnCanvas.style.width=canvas.offsetWidth+'px';
+            //domOnCanvas.style.height=canvas.offsetHeight+'px';
+            //console.log('canvas和其上的dom的宽度分别为：',canvas.offsetWidth,domOnCanvas.offsetWidth);
+
+        }
+
+        function createAllNodesByDom() {
+            var domOnCanvas=document.getElementById('dom-on-canvas');
+            for (var i = 0; i < attack_nodes.length; i++) {
+                for (var j = 0; j < attack_nodes[i].length; j++) {
+                    var a = document.createElement('a');
+                    a.style.width = 2 * r + 'px';
+                    a.style.height = 2 * r + 'px';
+                    a.style.left = attack_nodes[i][j].pos[0]-r + 'px';
+                    a.style.top = attack_nodes[i][j].pos[1]-r + 'px';
+                    a.innerText = attack_nodes[i][j].text;
+                    domOnCanvas.appendChild(a);
+                }
+            }
+        }
+
+        function clickDomNodeHandler (event){
+            // 获得事件源
+            var e=event||window.event;
+            var target=e.target||e.srcElement;
+            if(target.nodeName.toLowerCase()=='a'){
+                console.log(target.innerText);
+            }
+        }
+        // 绑定事件处理函数
+        document.getElementById('dom-on-canvas').addEventListener('click',clickDomNodeHandler,false);
     })()
 </script>
 </body>
