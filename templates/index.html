@@ -225,8 +225,9 @@
                 r = addPosProp();
 
                 // 画出所有的节点
-                drawAllNodes();
-                createAllNodesByDom();
+                //drawAllNodes();
+                var domOnCanvas=document.getElementById('dom-on-canvas');
+                createAllNodes(domOnCanvas);
             }
         });
 
@@ -546,7 +547,7 @@
             // 获得要显示的节点
             var showNodes = getShowNodes(ipObj.path);
             // 画圆
-            drawShowNodes(showNodes);
+            createShowNodesByDom(showNodes);
 
             // 生成攻击路径列表
             createAttackPath(ipObj)
@@ -638,7 +639,7 @@
                     // 获得要显示的节点
                     var showNodes = getShowNodes(showLines);//showLines-->[[21,33],[21,34],[21,35]]
                     // 画圆
-                    drawShowNodes(showNodes);
+                    createShowNodesByDom(showNodes);
 
                     // 画百分比
                     res.forEach(function (obj) {
@@ -652,43 +653,61 @@
             });
         }
 
-        // 绑定事件处理函数
-        window.addEventListener('load',setDomOnCanvas,false);
-        window.addEventListener('resize',setDomOnCanvas,false);
-
-        // 设置canvas上层的dom
-        function setDomOnCanvas() {
-            //var canvas=document.getElementById('attack-canvas');
-            //var domOnCanvas=document.getElementById('dom-on-canvas');
-
-            // 获得canvas的实际宽度和高度 canvas.offsetWidth-->1105
-            // 设置dom元素的宽度和高度 domOnCanvas.style.width=1105+'px'
-            //domOnCanvas.style.width=canvas.offsetWidth+'px';
-            //domOnCanvas.style.height=canvas.offsetHeight+'px';
-            //console.log('canvas和其上的dom的宽度分别为：',canvas.offsetWidth,domOnCanvas.offsetWidth);
-
-        }
-
-        function createAllNodesByDom() {
-            var domOnCanvas=document.getElementById('dom-on-canvas');
+        function createAllNodes(parentDiv) {
+            // 遍历二维数组
             for (var i = 0; i < attack_nodes.length; i++) {
                 for (var j = 0; j < attack_nodes[i].length; j++) {
+                    // 创建a元素
                     var a = document.createElement('a');
+                    // 设置a元素宽和高 css中已设置为display:block
                     a.style.width = 2 * r + 'px';
                     a.style.height = 2 * r + 'px';
+                    // 设置a元素left和top css已设置定位方式为absolute
                     a.style.left = attack_nodes[i][j].pos[0]-r + 'px';
                     a.style.top = attack_nodes[i][j].pos[1]-r + 'px';
+                    // 设置a元素文本内容
                     a.innerText = attack_nodes[i][j].text;
-                    domOnCanvas.appendChild(a);
+                    // 设置a元素id，用于控制show与hide
+                    a.id = attack_nodes[i][j].id;
+                    // 添加a元素到父div元素
+                    parentDiv.appendChild(a);
                 }
             }
         }
 
+        function createShowNodesByDom(arr) {
+
+            // 遍历二维数组
+            for (var i = 0; i < attack_nodes.length; i++) {
+                for (var j = 0; j < attack_nodes[i].length; j++) {
+                    // 获得node的id
+                    var node_id=parseInt(attack_nodes[i][j].id);
+                    // 获得node_id对应的dom元素
+                    var aDom=document.getElementById(node_id);
+                    console.log(aDom);
+                    // 如果node_id在要显示的arr数组中，设置show样式
+                    if (arr.indexOf(node_id) != -1) {
+                        //debugger;
+                        aDom.className='show';
+                    }
+                    // 如果node_id在不在要显示的arr数组中，设置hide样式
+                    else {
+                        //debugger;
+                        aDom.className='hide';
+                    }
+                }
+            }
+            console.log("draw node over");
+        }
+
+        // 点击某一node后的处理函数
         function clickDomNodeHandler (event){
             // 获得事件源
             var e=event||window.event;
             var target=e.target||e.srcElement;
+            // 事件委托的方式
             if(target.nodeName.toLowerCase()=='a'){
+                //
                 console.log(target.innerText);
             }
         }

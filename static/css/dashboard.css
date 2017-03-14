@@ -1,4 +1,3 @@
-
 #dom-on-canvas{
     height: 675px;
     width: 1200px;
@@ -13,9 +12,9 @@
     cursor: pointer;
 
     border-radius: 50%;
-    background-color: #8c8c8c;
+    background-color: #428bca;
     position: absolute;
-    color: #5cb85c;
+    color: #000000;
     font-size: 16px;
 
     vertical-align: middle;
@@ -27,6 +26,14 @@
     /*text-overflow:ellipsis;*/
     /*overflow: hidden;*/
 }
+#dom-on-canvas a.show{
+    color: #ff7676;
+    display: block;
+}
+#dom-on-canvas a.hide{
+    display: none;
+}
+
 #attack-canvas {
     height: 675px;
     width: 1200px;
