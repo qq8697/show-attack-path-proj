@@ -16,9 +16,9 @@ def getInitData():
         print(data)
         return jsonify(data)
 
-@app.route('/getPrePersent',methods=['GET','POST'])
-def getPrePersent():
-    with open('./static/data/prePersent.json','r')as json_file:
+@app.route('/getNextPersent',methods=['GET','POST'])
+def getNextPersent():
+    with open('./static/data/nextPersent.json','r')as json_file:
         data=json.load(json_file)
         print(data)
         return jsonify(data)

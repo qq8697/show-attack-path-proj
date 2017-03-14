@@ -227,7 +227,7 @@
                 // 画出所有的节点
                 //drawAllNodes();
                 var domOnCanvas=document.getElementById('dom-on-canvas');
-                createAllNodes(domOnCanvas);
+                createAllDomNodes(domOnCanvas);
             }
         });
 
@@ -296,31 +296,31 @@
             // console.log(ulEle);
         }
 
-        function drawAllNodes() {
+{#        function drawAllNodes() {#}
+{##}
+{#            for (var i = 0; i < attack_nodes.length; i++) {#}
+{#                for (var j = 0; j < attack_nodes[i].length; j++) {#}
+{#                    var x = attack_nodes[i][j].pos[0];#}
+{#                    var y = attack_nodes[i][j].pos[1];#}
+{##}
+{#                    // 画圆#}
+{#                    drawArc(x, y, r, '#428bca');#}
+{##}
+{#                    // 绘制文本#}
+{#                    drawText(x, y, attack_nodes[i][j].text, '#000000')#}
+{##}
+{#                }#}
+{#            }#}
+{#        }#}
 
-            for (var i = 0; i < attack_nodes.length; i++) {
-                for (var j = 0; j < attack_nodes[i].length; j++) {
-                    var x = attack_nodes[i][j].pos[0];
-                    var y = attack_nodes[i][j].pos[1];
-
-                    // 画圆
-                    drawArc(x, y, r, '#428bca');
-
-                    // 绘制文本
-                    drawText(x, y, attack_nodes[i][j].text, '#000000')
-
-                }
-            }
-        }
-
-        function drawArc(x, y, r, color) {
-            // 画圆
-            ctx.beginPath();
-            ctx.arc(x, y, r, 0, 2 * Math.PI);
-            ctx.fillStyle = color;
-            ctx.fill();
-            ctx.closePath();
-        }
+{#        function drawArc(x, y, r, color) {#}
+{#            // 画圆#}
+{#            ctx.beginPath();#}
+{#            ctx.arc(x, y, r, 0, 2 * Math.PI);#}
+{#            ctx.fillStyle = color;#}
+{#            ctx.fill();#}
+{#            ctx.closePath();#}
+{#        }#}
 
         function drawText(x, y, text, color) {
             // 绘制文本
@@ -365,33 +365,33 @@
             return showLines;
         }
 
-        function drawShowNodes(arr) {
-            // TODO2 合并drawShowNodes和drawAllNodes
-
-            for (var i = 0; i < attack_nodes.length; i++) {
-                for (var j = 0; j < attack_nodes[i].length; j++) {
-                    var x = attack_nodes[i][j].pos[0];
-                    var y = attack_nodes[i][j].pos[1];
-
-                    // 不显示的节点设置为透明色
-                    var nodeColor, textColor;
-                    if (arr.indexOf(parseInt(attack_nodes[i][j].id)) != -1) {
-                        nodeColor = "#ff7676";
-                        textColor = '#000000'
-                    }
-                    else {
-                        nodeColor = "rgba(225,225,225,0)";
-                        textColor = "rgba(225,225,225,0)"
-                    }
-                    // 画圆
-                    drawArc(x, y, r, nodeColor);
-
-                    // 绘制文本
-                    drawText(x, y, attack_nodes[i][j].text, textColor)
-                }
-            }
-            console.log("draw point over");
-        }
+{#        function drawShowNodes(arr) {#}
+{#            // TODO2 合并drawShowNodes和drawAllNodes#}
+{##}
+{#            for (var i = 0; i < attack_nodes.length; i++) {#}
+{#                for (var j = 0; j < attack_nodes[i].length; j++) {#}
+{#                    var x = attack_nodes[i][j].pos[0];#}
+{#                    var y = attack_nodes[i][j].pos[1];#}
+{##}
+{#                    // 不显示的节点设置为透明色#}
+{#                    var nodeColor, textColor;#}
+{#                    if (arr.indexOf(parseInt(attack_nodes[i][j].id)) != -1) {#}
+{#                        nodeColor = "#ff7676";#}
+{#                        textColor = '#000000'#}
+{#                    }#}
+{#                    else {#}
+{#                        nodeColor = "rgba(225,225,225,0)";#}
+{#                        textColor = "rgba(225,225,225,0)"#}
+{#                    }#}
+{#                    // 画圆#}
+{#                    drawArc(x, y, r, nodeColor);#}
+{##}
+{#                    // 绘制文本#}
+{#                    drawText(x, y, attack_nodes[i][j].text, textColor)#}
+{#                }#}
+{#            }#}
+{#            console.log("draw point over");#}
+{#        }#}
 
         function drawShowLines(arr) {
             // 画线
@@ -493,7 +493,7 @@
                             // debugger;
                             tdEle.innerText = getTextFromId(paths[i][j - 1]);
                             // 添加点击事件监听
-                            tdEle.addEventListener('click', clickNodeHandler, 'false');
+                            //tdEle.addEventListener('click', clickNodeHandler, 'false');
                             // paths[i][j-1]如果不存在，赋值为空
                         } else {
                             tdEle.innerText = '';
@@ -547,7 +547,7 @@
             // 获得要显示的节点
             var showNodes = getShowNodes(ipObj.path);
             // 画圆
-            createShowNodesByDom(showNodes);
+            showDomNodes(showNodes);
 
             // 生成攻击路径列表
             createAttackPath(ipObj)
@@ -604,56 +604,7 @@
             targetLi.className='active';
         }
 
-        // 点击某一node后的处理函数
-        function clickNodeHandler(event) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            // 获得事件源
-            var target = event.target;
-            // 获得文本
-            var text = target.innerText;
-            // 获得节点id
-            var id=getIdFromText(text);
-
-            // 发送请求
-            $.ajax({
-                url: '/getPrePersent',
-                data:{'id':id},
-                success: function (response) {
-                    // {"res":[{"edge":[21,33],"per":"80%"},{"edge":[21,34],"per":"60%"},{"edge":[21,35],"per":"70%"}]}
-                    var res = response.res;
-
-                    // 清除画布
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                    // 获得要显示的线
-                    var showLines=[];
-                    res.forEach(function (obj) {
-                        var arr=obj.edge;
-                        showLines.push(arr);
-                    });
-                    // 画线（先画线后画圆）
-                    drawShowLines(showLines);
-
-                    // 获得要显示的节点
-                    var showNodes = getShowNodes(showLines);//showLines-->[[21,33],[21,34],[21,35]]
-                    // 画圆
-                    createShowNodesByDom(showNodes);
-
-                    // 画百分比
-                    res.forEach(function (obj) {
-                        var arr=obj.edge;
-                        var start= getPosFromId(arr[0]);
-                        var end= getPosFromId(arr[1]);
-                        // 绘制文本
-                        drawText((start[0]+end[0])/2, (start[1]+end[1])/2, obj.per, '#000000')
-                    });
-                }
-            });
-        }
-
-        function createAllNodes(parentDiv) {
+        function createAllDomNodes(parentDiv) {
             // 遍历二维数组
             for (var i = 0; i < attack_nodes.length; i++) {
                 for (var j = 0; j < attack_nodes[i].length; j++) {
@@ -675,7 +626,7 @@
             }
         }
 
-        function createShowNodesByDom(arr) {
+        function showDomNodes(arr) {
 
             // 遍历二维数组
             for (var i = 0; i < attack_nodes.length; i++) {
@@ -684,15 +635,13 @@
                     var node_id=parseInt(attack_nodes[i][j].id);
                     // 获得node_id对应的dom元素
                     var aDom=document.getElementById(node_id);
-                    console.log(aDom);
+                    //console.log(aDom);
                     // 如果node_id在要显示的arr数组中，设置show样式
                     if (arr.indexOf(node_id) != -1) {
-                        //debugger;
                         aDom.className='show';
                     }
                     // 如果node_id在不在要显示的arr数组中，设置hide样式
                     else {
-                        //debugger;
                         aDom.className='hide';
                     }
                 }
@@ -707,11 +656,53 @@
             var target=e.target||e.srcElement;
             // 事件委托的方式
             if(target.nodeName.toLowerCase()=='a'){
-                //
-                console.log(target.innerText);
+                event.preventDefault();
+                event.stopPropagation();
+
+                // 获得文本
+                var text = target.innerText;
+                // 获得节点id
+                var id=getIdFromText(text);
+                //console.log(id)
+
+                // 发送请求
+                $.ajax({
+                    url: '/getNextPersent',
+                    data:{'id':id},
+                    success: function (response) {
+                        // {"res":[{"edge":[21,33],"per":"80%"},{"edge":[21,34],"per":"60%"},{"edge":[21,35],"per":"70%"}]}
+                        var res = response.res;
+
+                        // 清除画布
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                        // 获得要显示的线
+                        var showLines=[];
+                        res.forEach(function (obj) {
+                            var arr=obj.edge;
+                            showLines.push(arr);
+                        });
+                        // 画线（先画线后画圆）
+                        drawShowLines(showLines);
+
+                        // 获得要显示的节点
+                        var showNodes = getShowNodes(showLines);//showLines-->[[21,33],[21,34],[21,35]]
+                        // 画圆
+                        showDomNodes(showNodes);
+
+                        // 画百分比
+                        res.forEach(function (obj) {
+                            var arr=obj.edge;
+                            var start= getPosFromId(arr[0]);
+                            var end= getPosFromId(arr[1]);
+                            // 绘制文本
+                            drawText((start[0]+end[0])/2, (start[1]+end[1])/2, obj.per, '#000000')
+                        });
+                    }
+                });
             }
         }
-        // 绑定事件处理函数
+        // 绑定事件处理函数（使用事件委托的机制）
         document.getElementById('dom-on-canvas').addEventListener('click',clickDomNodeHandler,false);
     })()
 </script>

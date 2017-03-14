@@ -27,7 +27,7 @@
     /*overflow: hidden;*/
 }
 #dom-on-canvas a.show{
-    color: #ff7676;
+    background-color: #ff7676;
     display: block;
 }
 #dom-on-canvas a.hide{
